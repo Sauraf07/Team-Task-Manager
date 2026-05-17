@@ -32,13 +32,15 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to Database and Sync Models
 connectDB();
-db.sequelize.sync({ alter: true }) // alter: true updates tables to match models without dropping them completely
+
+db.sequelize.authenticate()
   .then(() => {
-    console.log('Database synced successfully.');
+    console.log('Database connected successfully.');
+
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.log('Failed to sync database:', err);
+    console.log('Database connection failed:', err);
   });

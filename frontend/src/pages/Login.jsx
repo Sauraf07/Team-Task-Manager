@@ -38,14 +38,14 @@ const Login = () => {
         <div className="col-md-6 col-lg-5">
           <div className="card shadow-sm p-4">
             <h2 className="text-center mb-4 text-primary-custom fw-bold">Login</h2>
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin} autoComplete="off">
               <div className="mb-3">
                 <label className="form-label">Email address</label>
-                <input type="email" name="email" className="form-control" placeholder="name@example.com" value={formData.email} onChange={handleChange} />
+                <input type="email" name="email" className="form-control" placeholder="name@example.com" value={formData.email} onChange={handleChange} autoComplete="off" />
               </div>
               <div className="mb-3">
                 <label className="form-label">Password</label>
-                <input type="password" name="password" className="form-control" placeholder="••••••••" value={formData.password} onChange={handleChange} />
+                <input type="password" name="password" className="form-control" placeholder="••••••••" value={formData.password} onChange={handleChange} autoComplete="new-password" />
               </div>
               <button type="submit" className="btn btn-primary w-100">Login</button>
             </form>

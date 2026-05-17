@@ -45,18 +45,18 @@ const Signup = () => {
         <div className="col-md-6 col-lg-5">
           <div className="card shadow-sm p-4">
             <h2 className="text-center mb-4 text-primary-custom fw-bold">Sign Up</h2>
-            <form onSubmit={handleSignup}>
+            <form onSubmit={handleSignup} autoComplete="off">
               <div className="mb-3">
                 <label className="form-label">Full Name</label>
-                <input type="text" name="name" className="form-control" placeholder="John Doe" value={formData.name} onChange={handleChange} />
+                <input type="text" name="name" className="form-control" placeholder="John Doe" value={formData.name} onChange={handleChange} autoComplete="off" />
               </div>
               <div className="mb-3">
                 <label className="form-label">Email address</label>
-                <input type="email" name="email" className="form-control" placeholder="name@example.com" value={formData.email} onChange={handleChange} />
+                <input type="email" name="email" className="form-control" placeholder="name@example.com" value={formData.email} onChange={handleChange} autoComplete="off" />
               </div>
               <div className="mb-3">
                 <label className="form-label">Password</label>
-                <input type="password" name="password" className="form-control" placeholder="••••••••" value={formData.password} onChange={handleChange} />
+                <input type="password" name="password" className="form-control" placeholder="••••••••" value={formData.password} onChange={handleChange} autoComplete="new-password" />
               </div>
               <div className="mb-4">
                 <label className="form-label">Account Role</label>
