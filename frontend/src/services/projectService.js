@@ -15,10 +15,22 @@ const addMemberToProject = async (projectId, userId) => {
   return response.data;
 };
 
+const updateProjectStatus = async (projectId, status) => {
+  const response = await api.put(`/projects/${projectId}/status`, { status });
+  return response.data;
+};
+
+const deleteProject = async (projectId) => {
+  const response = await api.delete(`/projects/${projectId}`);
+  return response.data;
+};
+
 const projectService = {
   createProject,
   getProjects,
   addMemberToProject,
+  updateProjectStatus,
+  deleteProject,
 };
 
 export default projectService;

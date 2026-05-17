@@ -90,3 +90,53 @@ exports.addMember = async (req, res) => {
     res.status(500).json({ message: 'Server error adding member' });
   }
 };
+
+// @desc    Update project status
+// @route   PUT /api/projects/:id/status
+// @access  Private/Admin
+exports.updateProjectStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const projectId = req.params.id;
+
+    const project = await Project.findByPk(projectId);
+    
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    project.status = status;
+    await project.save();
+
+    res.json(project);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error updating project status' });
+  }
+};
+
+// @desc    Delete a project
+// @route   DELETE /api/projects/:id
+// @access  Private/Admin
+exports.deleteProject = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+
+    const project = await Project.findByPk(projectId);
+    
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    if (project.status !== 'Completed') {
+      return res.status(400).json({ message: 'Only completed projects can be deleted' });
+    }
+
+    await project.destroy();
+
+    res.json({ message: 'Project deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error deleting project' });
+  }
+};

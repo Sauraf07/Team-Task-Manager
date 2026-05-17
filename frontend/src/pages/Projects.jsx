@@ -12,6 +12,37 @@ const Projects = () => {
   const user = authService.getCurrentUser()?.user;
   const isAdmin = user?.role === 'Admin';
 
+  const handleUpdateStatus = async (projectId, currentStatus) => {
+    // Cycle statuses: Active -> Completed -> On Hold -> Active
+    const statuses = ['Active', 'Completed', 'On Hold'];
+    const currentIndex = statuses.indexOf(currentStatus);
+    const newStatus = statuses[(currentIndex + 1) % statuses.length];
+    
+    try {
+      await projectService.updateProjectStatus(projectId, newStatus);
+      toast.success(`Project marked as ${newStatus}`);
+      fetchProjects();
+    } catch (error) {
+      toast.error('Failed to update project status');
+    }
+  };
+
+  const handleDeleteProject = async (projectId, status) => {
+    if (status !== 'Completed') {
+      return toast.warning('Only completed projects can be deleted');
+    }
+
+    if (!window.confirm('Are you sure you want to delete this project?')) return;
+
+    try {
+      await projectService.deleteProject(projectId);
+      toast.success('Project deleted successfully');
+      fetchProjects();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete project');
+    }
+  };
+
   const fetchProjects = async () => {
     try {
       const data = await projectService.getProjects();
@@ -103,7 +134,29 @@ const Projects = () => {
                     <i className="bi bi-people-fill text-secondary me-2 fs-5"></i>
                     <small className="text-muted fw-bold">{project.members ? project.members.length : 0} members</small>
                   </div>
-                  <button className="btn btn-sm btn-outline-primary rounded-pill px-3" onClick={() => toast.info(`Details: ${project.description || 'No description provided'}`)}>View Details</button>
+                  <div className="d-flex gap-2">
+                    {isAdmin && (
+                      <>
+                        <button 
+                          className="btn btn-sm btn-outline-success rounded-pill px-3" 
+                          onClick={() => handleUpdateStatus(project.id, project.status)}
+                          title="Change Status"
+                        >
+                          <i className="bi bi-arrow-repeat"></i> Status
+                        </button>
+                        {project.status === 'Completed' && (
+                          <button 
+                            className="btn btn-sm btn-outline-danger rounded-pill px-3" 
+                            onClick={() => handleDeleteProject(project.id, project.status)}
+                            title="Delete Project"
+                          >
+                            <i className="bi bi-trash"></i>
+                          </button>
+                        )}
+                      </>
+                    )}
+                    <button className="btn btn-sm btn-outline-primary rounded-pill px-3" onClick={() => toast.info(`Details: ${project.description || 'No description provided'}`)}>Details</button>
+                  </div>
                 </div>
               </div>
             </div>
