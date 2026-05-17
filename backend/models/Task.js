@@ -27,6 +27,7 @@ const Task = sequelize.define('tasks', {
   }
 }, {
   timestamps: true,
+  freezeTableName: true
 });
 
 module.exports = Task;

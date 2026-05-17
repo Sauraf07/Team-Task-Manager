@@ -23,6 +23,7 @@ const Project = sequelize.define('projects', {
   }
 }, {
   timestamps: true,
+  freezeTableName: true
 });
 
 module.exports = Project;

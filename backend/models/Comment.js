@@ -13,6 +13,7 @@ const Comment = sequelize.define('comments', {
   }
 }, {
   timestamps: true,
+  freezeTableName: true
 });
 
 module.exports = Comment;

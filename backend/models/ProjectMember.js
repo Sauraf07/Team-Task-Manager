@@ -11,6 +11,7 @@ const ProjectMember = sequelize.define('projectmember', {
   // Custom fields can be added here if needed, like 'role_in_project'
 }, {
   timestamps: true,
+  freezeTableName: true
 });
 
 module.exports = ProjectMember;
