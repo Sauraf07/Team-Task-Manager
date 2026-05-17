@@ -12,15 +12,10 @@ const Projects = () => {
   const user = authService.getCurrentUser()?.user;
   const isAdmin = user?.role === 'Admin';
 
-  const handleUpdateStatus = async (projectId, currentStatus) => {
-    // Cycle statuses: Active -> Completed -> On Hold -> Active
-    const statuses = ['Active', 'Completed', 'On Hold'];
-    const currentIndex = statuses.indexOf(currentStatus);
-    const newStatus = statuses[(currentIndex + 1) % statuses.length];
-    
+  const handleUpdateStatus = async (projectId, newStatus) => {
     try {
       await projectService.updateProjectStatus(projectId, newStatus);
-      toast.success(`Project marked as ${newStatus}`);
+      toast.success(`Project marked as ${newStatus === 'Active' ? 'Pending' : newStatus}`);
       fetchProjects();
     } catch (error) {
       toast.error('Failed to update project status');
@@ -114,7 +109,7 @@ const Projects = () => {
             <div className="col-md-6 col-lg-4 mb-4" key={project.id}>
               <div className="card h-100 p-4 border-0 shadow-sm position-relative card-hover-effect">
                 <span className={`position-absolute top-0 end-0 mt-3 me-3 badge ${getStatusBadge(project.status)} rounded-pill`}>
-                  {project.status}
+                  {project.status === 'Active' ? 'Pending' : project.status}
                 </span>
                 
                 <div className="d-flex align-items-center mb-3">
@@ -137,21 +132,31 @@ const Projects = () => {
                   <div className="d-flex gap-2">
                     {isAdmin && (
                       <>
-                        <button 
-                          className="btn btn-sm btn-outline-success rounded-pill px-3" 
-                          onClick={() => handleUpdateStatus(project.id, project.status)}
-                          title="Change Status"
-                        >
-                          <i className="bi bi-arrow-repeat"></i> Status
-                        </button>
-                        {project.status === 'Completed' && (
+                        {project.status !== 'Completed' ? (
                           <button 
-                            className="btn btn-sm btn-outline-danger rounded-pill px-3" 
-                            onClick={() => handleDeleteProject(project.id, project.status)}
-                            title="Delete Project"
+                            className="btn btn-sm btn-outline-success rounded-pill px-3" 
+                            onClick={() => handleUpdateStatus(project.id, 'Completed')}
+                            title="Mark as Complete"
                           >
-                            <i className="bi bi-trash"></i>
+                            <i className="bi bi-check2-circle"></i> Complete
                           </button>
+                        ) : (
+                          <>
+                            <button 
+                              className="btn btn-sm btn-outline-warning rounded-pill px-3" 
+                              onClick={() => handleUpdateStatus(project.id, 'Active')}
+                              title="Mark as Pending"
+                            >
+                              <i className="bi bi-hourglass-split"></i> Pending
+                            </button>
+                            <button 
+                              className="btn btn-sm btn-outline-danger rounded-pill px-3" 
+                              onClick={() => handleDeleteProject(project.id, project.status)}
+                              title="Delete Project"
+                            >
+                              <i className="bi bi-trash"></i> Delete
+                            </button>
+                          </>
                         )}
                       </>
                     )}
