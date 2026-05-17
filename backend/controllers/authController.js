@@ -99,3 +99,28 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ message: 'Server error fetching users' });
   }
 };
+
+// @desc    Delete a user (employee)
+// @route   DELETE /api/auth/users/:id
+// @access  Private/Admin
+exports.deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if (req.user.id === parseInt(userId)) {
+      return res.status(400).json({ message: 'You cannot delete yourself' });
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    await user.destroy();
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error deleting user' });
+  }
+};

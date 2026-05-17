@@ -6,19 +6,35 @@ const Team = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const currentUser = authService.getCurrentUser()?.user;
+  const isAdmin = currentUser?.role === 'Admin';
+
+  const fetchUsers = async () => {
+    try {
+      const usersData = await authService.getAllUsers();
+      setMembers(usersData);
+    } catch (error) {
+      toast.error('Failed to fetch team members');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const usersData = await authService.getAllUsers();
-        setMembers(usersData);
-      } catch (error) {
-        toast.error('Failed to fetch team members');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchUsers();
   }, []);
+
+  const handleRemoveUser = async (userId, userName) => {
+    if (!window.confirm(`Are you sure you want to remove ${userName}?`)) return;
+
+    try {
+      await authService.deleteUser(userId);
+      toast.success(`${userName} removed successfully`);
+      fetchUsers();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to remove user');
+    }
+  };
 
   if (loading) return <div className="text-center mt-5"><div className="spinner-border text-primary" role="status"></div></div>;
 
@@ -57,9 +73,17 @@ const Team = () => {
               </div>
 
               <div className="mt-auto">
-                <button className="btn btn-outline-primary btn-sm rounded-pill w-100" onClick={() => toast.info(`${member.name}'s Profile (${member.email})`)}>
+                <button className="btn btn-outline-primary btn-sm rounded-pill w-100 mb-2" onClick={() => toast.info(`${member.name}'s Profile (${member.email})`)}>
                   View Profile
                 </button>
+                {isAdmin && currentUser?.id !== member.id && (
+                  <button 
+                    className="btn btn-outline-danger btn-sm rounded-pill w-100" 
+                    onClick={() => handleRemoveUser(member.id, member.name)}
+                  >
+                    <i className="bi bi-person-x"></i> Remove
+                  </button>
+                )}
               </div>
             </div>
           </div>

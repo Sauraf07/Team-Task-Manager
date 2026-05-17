@@ -30,12 +30,18 @@ const getAllUsers = async () => {
   return response.data;
 };
 
+const deleteUser = async (userId) => {
+  const response = await api.delete(`/auth/users/${userId}`);
+  return response.data;
+};
+
 const authService = {
   signup,
   login,
   logout,
   getCurrentUser,
   getAllUsers,
+  deleteUser,
 };
 
 export default authService;
