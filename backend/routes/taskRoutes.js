@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', protect, getTasks);
 
 // Create task (Admin only)
-router.post('/', protect, authorize('Admin'), createTask);
+router.post('/', protect, authorize('Admin', 'Member'), createTask);
 
 // Update task status (Admin or Assigned Member)
 router.put('/:id/status', protect, updateTaskStatus);
